@@ -3,11 +3,12 @@ import { ApiError } from "../utils/api-errors.js"
 import { ApiResponce } from "../utils/api-response.js"
 import { asyncHandler }  from "../utils/async-handler.js" 
 import { sendEmail, emailVerificationMailGenContent } from "../utils/mail.js"
+import crypto from "crypto"
   
 
 // generate access & refresh token 
 
-import { access } from "fs"
+
 
 const generateAccessRefreshTokens = async (userId) => {
     try {
@@ -68,7 +69,7 @@ const registerUser = asyncHandler( async (req, res) => {
             user.username,
             `${req.protocol}://${req.get(
                 "host",
-            )}/api/v1/users/verify-email/${unHashedToken}`,
+            )}/api/v1/auth/verify-email/${unHashedToken}`,
         )
     })
 
@@ -97,11 +98,48 @@ const registerUser = asyncHandler( async (req, res) => {
 
 // verify email controller
 
+const verifyEmail = asyncHandler(async (req, res) => {
+    const { verificationToken } = req.params
+
+    if (!verificationToken) {
+        throw new ApiError(404, "invaild token")
+    }
+
+    const hashedToken = crypto
+        .createHash("sha256")
+        .update(verificationToken)
+        .digest("hex")
+
+    const user = await User.findOne({ 
+        emailVerificationToken : hashedToken,
+        emailVerificationExpiry : { $gt : Date.now() }
+     })
+
+    // console.log("user is :",user);
+
+    if (!user) {
+        throw new ApiError(489, "Token is invaild or Expired")
+    }
+
+    user.emailVerificationToken = undefined
+    user.emailVerificationExpiry = undefined
+
+    user.isEmailVerified = true
+
+    await user.save({validateBeforeSave : false})
+
+    return res
+        .status(201)
+        .json(new ApiResponce(200, { isEmailVerified : true }, "Email-verified succesfully"))
+    
+})
+
 // forgot password
 
 // reset password
 
 
 export {
-    registerUser
+    registerUser,
+    verifyEmail
 }
