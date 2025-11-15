@@ -4,6 +4,7 @@ import { ApiResponce } from "../utils/api-response.js"
 import { asyncHandler }  from "../utils/async-handler.js" 
 import { sendEmail, emailVerificationMailGenContent } from "../utils/mail.js"
 import crypto from "crypto"
+import bcrypt from "bcrypt"
   
 
 // generate access & refresh token 
@@ -14,9 +15,14 @@ const generateAccessRefreshTokens = async (userId) => {
     try {
         
         const user = await User.findById(userId)
+        // console.log("here.....",user);
+        
 
         const accessToken = user.generateAccessToken()
         const refreshToken = user.generateRefreshToken()
+
+        // console.log(".................",accessToken, ".............",refreshToken);
+        
 
         user.refreshToken = refreshToken
 
@@ -26,6 +32,7 @@ const generateAccessRefreshTokens = async (userId) => {
 
 
     } catch (err) {
+        // console.log("TOKEN ERROR:", err);
         throw new ApiError(500,
             "Something went wrong while creating tokens"
         )
@@ -37,6 +44,8 @@ const generateAccessRefreshTokens = async (userId) => {
 const registerUser = asyncHandler( async (req, res) => {
 
     const { email, username, password, role } = req.body
+
+     // validate data using express validator
     
     const existedUser = await User.findOne({
         $or : [{ username } , { email }]
@@ -94,6 +103,51 @@ const registerUser = asyncHandler( async (req, res) => {
 
 // user login controller
 
+const loginUser = asyncHandler(async (req,res) => {
+    // get data 
+    const { username, email, password, role} = req.body
+
+    // validate data using express validator
+    if (!username || !email) {
+        throw new ApiError( 400, "Username or Email is required")
+    }
+
+    const user = await User.findOne({
+        $or : [{username}, {email}]
+    })
+
+    if (!user) {
+        throw new ApiError(404, "User does not exist register yourself first")
+    }
+
+    const isPassword = await bcrypt.compare(password, user.password)
+
+    if (!isPassword) {
+        throw new ApiError(400, "Incorrect password")
+    }
+
+    const {accessToken, refreshToken} = await generateAccessRefreshTokens(user._id)
+
+    const loggedInUser = await User.findById(user._id).select(
+        "-password -refreshToken -emailVerificationToken -emailVerificationExpiry -__v"
+    )
+
+    // console.log(loggedInUser);
+    
+
+    const cookieOption = {
+        httpOnly : true,
+        secure : true
+    }
+
+    return res
+        .status(201)
+        .cookie("accessToke", accessToken, cookieOption)
+        .cookie("refreshToken", refreshToken, cookieOption)
+        .json(new ApiResponce(200, { user: loggedInUser }, "User logged in successfully"))
+
+})
+
 // user logout controller
 
 // verify email controller
@@ -141,5 +195,6 @@ const verifyEmail = asyncHandler(async (req, res) => {
 
 export {
     registerUser,
-    verifyEmail
+    verifyEmail,
+    loginUser
 }

@@ -73,15 +73,17 @@ userSchema.pre("save", async function (next) {
 
 
 userSchema.methods.generateAccessToken = function () {
+    // console.log("hello");
+    
     return Jwt.sign(
         {
             _id : this._id,
             email : this.email,
             username : this.username
         },
-        process.env.ACCESS_TOKEN_SECRETE,
+        process.env.ACCESS_TOKEN_SECRET,
         {
-            expiresIn : process.env.ACCESSTOKEN_EXPIRY
+            expiresIn : process.env.ACCESS_TOKEN_EXPIRY
         }
     )
 }
@@ -93,7 +95,7 @@ userSchema.methods.generateRefreshToken = function () {
             _id : this._id,
 
         },
-        process.env.REFRESH_TOKEN_SECRETE,
+        process.env.REFRESH_TOKEN_SECRET,
         {
             expiresIn : process.env.REFRESH_TOKEN_EXPIRY
         }
