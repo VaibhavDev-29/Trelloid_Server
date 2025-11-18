@@ -9,8 +9,6 @@ import bcrypt from "bcrypt"
 
 // generate access & refresh token 
 
-
-
 const generateAccessRefreshTokens = async (userId) => {
     try {
         
@@ -137,18 +135,48 @@ const loginUser = asyncHandler(async (req,res) => {
 
     const cookieOption = {
         httpOnly : true,
-        secure : true
+        secure : false
     }
 
     return res
         .status(201)
-        .cookie("accessToke", accessToken, cookieOption)
+        .cookie("accessToken", accessToken, cookieOption)
         .cookie("refreshToken", refreshToken, cookieOption)
         .json(new ApiResponce(200, { user: loggedInUser }, "User logged in successfully"))
 
 })
 
 // user logout controller
+
+const logoutUser = asyncHandler(async (req, res) => {
+    // get tokens
+
+    await User.findByIdAndUpdate(
+        // console.log("hello"),
+        // console.log("_id is ...", req.user._id),
+        
+        req.user._id,
+        {
+            $set : {
+                refreshToken : ""
+            }
+        },
+        {
+            new : true
+        }
+    )
+
+    const options = {
+        httpOnly : true,
+        secure : true
+    }
+
+    return res
+        .status(200)
+        .clearCookie("accessToken",options)
+        .clearCookie("refreshToken",options)
+        .json(new ApiResponce(200, {}, "User loged out"))
+})
 
 // verify email controller
 
@@ -196,5 +224,6 @@ const verifyEmail = asyncHandler(async (req, res) => {
 export {
     registerUser,
     verifyEmail,
-    loginUser
+    loginUser,
+    logoutUser
 }
