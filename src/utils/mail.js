@@ -80,9 +80,31 @@ const emailVerificationMailGenContent = (username, verificationUrl) => {
 }
 
 
+const resetPasswordMailGenContent = (username, verificationUrl) => {
+
+    console.log(username,verificationUrl);
+    
+    return {
+        body : {
+            name : username,
+            intro : "Welcome to Trelloid! Here you can reset your password.",
+            action : {
+                instruction : "for reset your password click this button:",
+                button : {
+                    color: "#1757cdff", // Optional action button color
+                    text: "Reset-Password",
+                    link: verificationUrl,
+                },
+                outro : "Need help, or have questions? Just reply to this email, we'd love to help." 
+            }
+        }
+    }
+}
+
 
 
 export  {
     sendEmail,
-    emailVerificationMailGenContent
+    emailVerificationMailGenContent,
+    resetPasswordMailGenContent
 }
