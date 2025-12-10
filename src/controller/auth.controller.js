@@ -447,6 +447,7 @@ export {
     changeCurrentPassword,
     getCurrentUser,
     resendEmailVerification,
+    refreshAccessToken
 }
 
 

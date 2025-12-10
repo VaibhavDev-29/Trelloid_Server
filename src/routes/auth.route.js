@@ -9,7 +9,8 @@ import {
     resetForgottenPassword, 
     getCurrentUser,
     changeCurrentPassword,
-    resendEmailVerification} from "../controller/auth.controller.js";
+    resendEmailVerification,
+    refreshAccessToken} from "../controller/auth.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
 
 const router = Router()
@@ -23,6 +24,7 @@ router.post("/login", loginUser)
 router.post("/forgot-password", forgotPasswordRequest)
 router.get("/forgot-password/:token",resetForgottenPassword)
 router.post("/resend-email", resendEmailVerification)
+router.get("/refresh-token", refreshAccessToken)
 
 
 // Secured routes 
