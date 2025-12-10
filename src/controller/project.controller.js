@@ -13,7 +13,7 @@ import mongoose from "mongoose";
 // get all projects of currently logged in user 
 const getAllMyProjects = asyncHandler(async (req, res) => {
 
-    const userId = new mongoose.Types.ObjectId.createFromHexString(req.user._id)
+    const userId = new mongoose.Types.ObjectId(req.user._id)
 
     const projects = await ProjectMember.aggregate([
         {
@@ -57,12 +57,12 @@ const createProject = asyncHandler(async (req, res) => {
     const project = await Project.create({
         name,
         description,
-        createdBy : new mongoose.Types.ObjectId.createFromHexString(userId)
+        createdBy : new mongoose.Types.ObjectId(userId)
     })
 
     await ProjectMember.create({
         project: new mongoose.Types.ObjectId(project._id),
-        user : new mongoose.Types.ObjectId.createFromHexString(userId),
+        user : new mongoose.Types.ObjectId(userId),
         role : userRoleEnum.ADMIN
     })
 
@@ -136,11 +136,11 @@ const addMemberToProject = asyncHandler(async (req, res) => {
     await ProjectMember.findOneAndUpdate(
         {
             user : new mongoose.Types.ObjectId(user._id),
-            project : new mongoose.Types.ObjectId.createFromHexString(projectId)
+            project : new mongoose.Types.ObjectId(projectId)
         },
         {
             user : new mongoose.Types.ObjectId(user._id),
-            project : new mongoose.Types.ObjectId.createFromHexString(projectId),
+            project : new mongoose.Types.ObjectId(projectId),
             role : role
         },
         {
@@ -173,8 +173,8 @@ const updateMemberRole = asyncHandler(async (req, res) => {
     }
 
     let projectMember = await ProjectMember.findOne({
-        user: new mongoose.Types.ObjectId.createFromHexString(userId),
-        project: new mongoose.Types.ObjectId.createFromHexString(projectId)
+        user: new mongoose.Types.ObjectId(userId),
+        project: new mongoose.Types.ObjectId(projectId)
     })
 
     if (!projectMember) {
@@ -210,8 +210,8 @@ const deleteMember = asyncHandler(async (req, res) => {
     const { projectId, userId } = req.params
 
     let projectMember = await ProjectMember.findOne({
-        user : new mongoose.Types.ObjectId.createFromHexString(userId),
-        project : new mongoose.Types.ObjectId.createFromHexString(projectId)
+        user : new mongoose.Types.ObjectId(userId),
+        project : new mongoose.Types.ObjectId(projectId)
     })
 
     if (!projectMember) {
