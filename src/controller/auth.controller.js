@@ -41,7 +41,7 @@ const generateAccessRefreshTokens = async (userId) => {
 
 const registerUser = asyncHandler( async (req, res) => {
 
-    const { email, username, password, role } = req.body
+    const { email, username, password, roles } = req.body
 
      // validate data using express validator
     
@@ -57,6 +57,7 @@ const registerUser = asyncHandler( async (req, res) => {
         email,
         password,
         username,
+        roles,
         isEmailVerified: false 
     })
 

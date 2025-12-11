@@ -38,15 +38,17 @@ export const verifyJWT = asyncHandler(async (req, res, next) => {
     }
 })
 
+
 export const validateProjectPermission = (roles = []) => 
     asyncHandler(async (req, res, next) => {
         const { projectId } = req.params
-
+        // console.log(roles);
+        
         if (!projectId) {
             throw new ApiError(400, "Project id missing.")
         }
 
-        const project = ProjectMember.findOne({
+        const project = await ProjectMember.findOne({
             project : new mongoose.Types.ObjectId(projectId),
             user : new mongoose.Types.ObjectId(req.user._id)
         })
@@ -54,9 +56,13 @@ export const validateProjectPermission = (roles = []) =>
         if (!project) {
             throw new ApiError(404, "Project not found.")
         }
-
-        const givenRole = project?.role
+        console.log(project);
+        
+        const givenRole = project.role
+        console.log(givenRole);
         req.user.role = givenRole
+        
+        
 
         if (!roles.includes(givenRole)) {
             throw new ApiError(403, "Access denied!")
@@ -64,3 +70,16 @@ export const validateProjectPermission = (roles = []) =>
 
         next()
 })
+
+
+export const validateRoles = (roles = []) => 
+    asyncHandler(async (req, res, next) => {
+        // console.log(req.user.roles);
+        // console.log(roles);
+        
+        
+        if (!roles.includes(req.user.roles)) {
+            throw new ApiError(403, "Access denied!")
+        }
+        next()
+    })

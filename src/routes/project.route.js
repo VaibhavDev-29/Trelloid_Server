@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { validateProjectPermission, verifyJWT } from "../middleware/auth.middleware.js";
+import { validateProjectPermission, validateRoles, verifyJWT } from "../middleware/auth.middleware.js";
 import 
 {   
     addMemberToProject,
@@ -25,7 +25,7 @@ router.use(verifyJWT)
 router
     .route("/")
     .get(getAllMyProjects)
-    .post(validateProjectPermission(userRoleEnum.ADMIN),createProject)
+    .post(validateRoles(userRoleEnum.ADMIN),createProject)
 
 router
     .route("/:projectId")

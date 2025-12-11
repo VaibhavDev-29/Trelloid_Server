@@ -54,6 +54,9 @@ const createProject = asyncHandler(async (req, res) => {
     const { name, description } = req.body
     const  userId  = req.user._id
 
+    // console.log("userid id ",userId);
+    
+
     const project = await Project.create({
         name,
         description,
@@ -234,6 +237,8 @@ const deleteMember = asyncHandler(async (req, res) => {
 })
 
 export {
+
+
     getAllMyProjects,
     getProjectById,
     createProject,
@@ -242,5 +247,6 @@ export {
     addMemberToProject,
     updateMemberRole,
     deleteMember,
+
 
 }
