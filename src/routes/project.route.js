@@ -9,7 +9,8 @@ import
     getProjectById,
     updateMemberRole,
     updateProject,
-    deleteMember
+    deleteMember,
+    getProjectMembers
     
 } from "../controller/project.controller.js";
 import { availableUserRoles, userRoleEnum } from "../utils/constants.js";
@@ -35,6 +36,7 @@ router
     
 router
     .route("/:projectId/member")
+    .get(getProjectMembers)
     .post(validateProjectPermission([ userRoleEnum.ADMIN, userRoleEnum.PROJECT_ADMIN]), addMemberToProject)
 
 router
