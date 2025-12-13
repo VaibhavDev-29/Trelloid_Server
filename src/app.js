@@ -9,11 +9,13 @@ app.use(cookieParser())
 import healthcheckRouter from "./routes/healthcheck.routes.js"
 import authRouter from "./routes/auth.route.js"
 import projectRouter from "./routes/project.route.js"
+import taskRouter from "./routes/task.route.js"
 
 
 app.use("/api/v1/healthcheck", healthcheckRouter)
 app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/projects", projectRouter)
+app.use("/api/v1/tasks", taskRouter)
 
 
 export default app
