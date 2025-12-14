@@ -32,13 +32,29 @@ const getTasks = asyncHandler(async (req, res) => {
         .json(new ApiResponce(200, tasks, "Tasks fetched succesfully!"))
 })
 
+const createTasks = asyncHandler(async (req, res) => {
 
+})
 
+const deleteTask = asyncHandler(async (req, res) => {
 
+    const { taskId } = req.params
+    
+    const task = await Task.findByIdAndDelete(taskId)
+
+    if (!task) {
+        throw new ApiError(404, "task not found.")
+    }
+
+    return res
+        .status(200)
+        .json(new ApiResponce(200, task, "Task deleted Succesfully!"))
+})
 
 
 
 
 export {
-    getTasks
+    getTasks,
+    deleteTask
 }
