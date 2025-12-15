@@ -12,19 +12,20 @@ import {
     resendEmailVerification,
     refreshAccessToken} from "../controller/auth.controller.js";
 import { verifyJWT } from "../middleware/auth.middleware.js";
+import { upload } from "../middleware/multer.middleware.js";
 
 const router = Router()
 
 
 // un-Secured routes 
 
-router.post("/register", registerUser)
+router.post("/register", upload.single("avatar"), registerUser)
 router.get("/verify-email/:verificationToken", verifyEmail)
 router.post("/login", loginUser)
 router.post("/forgot-password", forgotPasswordRequest)
 router.get("/forgot-password/:token",resetForgottenPassword)
 router.post("/resend-email", resendEmailVerification)
-router.get("/refresh-token", refreshAccessToken)
+router.get("/refresh-token", refreshAccessToken )
 
 
 // Secured routes 
