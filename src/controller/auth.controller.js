@@ -42,7 +42,8 @@ const generateAccessRefreshTokens = async (userId) => {
 const registerUser = asyncHandler( async (req, res) => {
 
     const { email, username, password, roles } = req.body
-
+    console.log(req.file);
+    
      // validate data using express validator
     
     const existedUser = await User.findOne({
