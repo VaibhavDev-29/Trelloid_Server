@@ -56,10 +56,10 @@ export const validateProjectPermission = (roles = []) =>
         if (!project) {
             throw new ApiError(404, "Project not found.")
         }
-        console.log(project);
+        // console.log(project);
         
         const givenRole = project.role
-        console.log(givenRole);
+        // console.log(givenRole);
         req.user.role = givenRole
         
         
