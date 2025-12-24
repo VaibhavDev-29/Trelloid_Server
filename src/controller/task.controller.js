@@ -34,7 +34,7 @@ const getTasks = asyncHandler(async (req, res) => {
         .json(new ApiResponce(200, tasks, "Tasks fetched succesfully!"))
 })
 
-const createTasks = asyncHandler(async (req, res) => {
+const createTask = asyncHandler(async (req, res) => {
 
     const { tittle, discription, assignTo, status } = req.body
     const { projectId } = req.params
@@ -44,30 +44,34 @@ const createTasks = asyncHandler(async (req, res) => {
         throw new ApiError(404, "Project not found")
     }
 
-    if (!mongoose.isValidObjectId(assignTo)) {
-        throw new ApiError(400, "Invaild assignTo user id ")
-    }
+    if (assignTo) {
+        
+        if (!mongoose.isValidObjectId(assignTo)) {
+            throw new ApiError(400, "Invaild assignTo user id ")
+        }
 
-    const userExist = await User.findById(assignTo)
+        const userExist = await User.findById(assignTo)
 
-    if (!userExist) {
-        throw new ApiError(400, "Assigned user not found")
-    }
+        if (!userExist) {
+            throw new ApiError(400, "Assigned user not found")
+        }
 
-    const isProjectMember = await ProjectMember.findOne({
-        project : projectId,
-        user : assignTo
-    })
+        const isProjectMember = await ProjectMember.findOne({
+            project : projectId,
+            user : assignTo
+        })
 
-    if (!isProjectMember) {
-        throw new ApiError(400,"Assigned user is not a member of this project")
+        if (!isProjectMember) {
+            throw new ApiError(400,"Assigned user is not a member of this project")
+        }
+    
     }
 
     const files = req.files || []
 
     const attachments = files.map((file) => {
         return {
-            url : `${process.env.SERVERURL}/images/${file.originalname}`,
+            url : `${process.env.SERVERURL}/images/${file.filename}`,
             mimetype : file.mimetype,
             size: file.size
         }
@@ -104,10 +108,75 @@ const deleteTask = asyncHandler(async (req, res) => {
 })
 
 
+const updateTask = asyncHandler(async (req, res) => {
+    console.log("hello from uptask");
+    
 
+    const { tittle, discription, assignTo, status } = req.body
+    const { projectId, taskId } = req.params
+
+    const project = await Project.findById(projectId)
+    const task = await Task.findById(taskId)
+
+    if (!project || !task) {
+        throw new ApiError(404, "Project or task not found")
+    }
+
+    if (task.project.toString() !== projectId) {
+        throw new ApiError(400, "Task does not belong to this project")
+    }
+
+    if (assignTo) {
+
+        if (!mongoose.isValidObjectId(assignTo)) {
+            throw new ApiError(400, "Invaild assignTo user id ")
+        }
+
+        const userExist = await User.findById(assignTo)
+
+        if (!userExist) {
+            throw new ApiError(400, "Assigned user not found")
+        }
+
+        const isProjectMember = await ProjectMember.findOne({
+            project : projectId,
+            user : assignTo
+        })
+
+        if (!isProjectMember) {
+            throw new ApiError(400,"Assigned user is not a member of this project")
+        }
+
+        task.assignedTo = new mongoose.Types.ObjectId(assignTo)
+        task.assignedBy = new mongoose.Types.ObjectId(req.user._id)
+    }
+    
+    const files = req.files || []
+
+    const attachments = files.map((file) => {
+        return {
+            url : `${process.env.SERVERURL}/images/${file.filename}`,
+            mimetype : file.mimetype,
+            size: file.size
+        }
+    })
+  
+    task.tittle = tittle ?? task.tittle
+    task.discription = discription ?? task.discription
+    task.status = status ?? task.status
+    task.attachments = [...(task.attachments || []), ...attachments]
+        
+    await task.save()
+
+    return res
+        .status(200)
+        .json(new ApiResponce(200, task, "Task updated successfully"))
+
+})
 
 export {
     getTasks,
     deleteTask,
-    createTasks
+    createTask,
+    updateTask
 }

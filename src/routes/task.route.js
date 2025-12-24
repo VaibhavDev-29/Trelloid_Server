@@ -3,7 +3,8 @@ import { verifyJWT, validateProjectPermission } from "../middleware/auth.middlew
 import { 
     getTasks,
     deleteTask,
-    createTasks
+    createTask,
+    updateTask
  } from "../controller/task.controller.js";
 import { availableUserRoles, userRoleEnum } from "../utils/constants.js";
 import { upload } from "../middleware/multer.middleware.js";
@@ -19,13 +20,21 @@ router
     .post(
         validateProjectPermission([userRoleEnum.ADMIN, userRoleEnum.PROJECT_ADMIN]),
         upload.array("attachments"),
-        createTasks
+        createTask
     )
 
 
 router
-    .route("/:projectId/t/taskId")
-    .delete(deleteTask)
+    .route("/:projectId/t/:taskId")
+    .delete(
+        validateProjectPermission([userRoleEnum.ADMIN, userRoleEnum.PROJECT_ADMIN]),
+        deleteTask)
+    .put(
+        validateProjectPermission(
+            [userRoleEnum.ADMIN,userRoleEnum.PROJECT_ADMIN]),
+            upload.array("attachments"),
+            updateTask
+    )
 
 
 
