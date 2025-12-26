@@ -4,7 +4,8 @@ import {
     getTasks,
     deleteTask,
     createTask,
-    updateTask
+    updateTask,
+    getTaskById
  } from "../controller/task.controller.js";
 import { availableUserRoles, userRoleEnum } from "../utils/constants.js";
 import { upload } from "../middleware/multer.middleware.js";
@@ -35,6 +36,7 @@ router
             upload.array("attachments"),
             updateTask
     )
+    .get(validateProjectPermission(availableUserRoles),getTaskById)
 
 
 

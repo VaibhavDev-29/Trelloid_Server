@@ -109,7 +109,7 @@ const deleteTask = asyncHandler(async (req, res) => {
 
 
 const updateTask = asyncHandler(async (req, res) => {
-    console.log("hello from uptask");
+    // console.log("hello from uptask");
     
 
     const { tittle, discription, assignTo, status } = req.body
@@ -174,9 +174,22 @@ const updateTask = asyncHandler(async (req, res) => {
 
 })
 
+const getTaskById = asyncHandler(async (req, res) => {
+
+    const { taskId } = req.params
+    const task = await Task.findById(taskId)
+        .populate("assignedTo", "username fullName avatar")
+
+    return res
+        .status(200)
+        .json(new ApiResponce(200, task, "Task fecthed successfully"))
+
+})
+
 export {
     getTasks,
     deleteTask,
     createTask,
-    updateTask
+    updateTask,
+    getTaskById
 }
