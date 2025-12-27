@@ -176,9 +176,17 @@ const updateTask = asyncHandler(async (req, res) => {
 
 const getTaskById = asyncHandler(async (req, res) => {
 
-    const { taskId } = req.params
+    const { taskId, projectId } = req.params
     const task = await Task.findById(taskId)
         .populate("assignedTo", "username fullName avatar")
+
+    if (!task) {
+        throw new ApiError(404, "Task not found")
+    }
+
+    if (task.project.toString() !== projectId) {
+        throw new ApiError(400, "Task does not belong to this project")
+    }
 
     return res
         .status(200)
