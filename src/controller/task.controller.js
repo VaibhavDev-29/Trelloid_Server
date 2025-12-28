@@ -1,12 +1,9 @@
 import Project from "../models/project.model.js"
 import Task from "../models/task.models.js"
-import SubTask from "../models/subtask.models.js"
 import { ApiError } from "../utils/api-errors.js";
 import { ApiResponce } from "../utils/api-response.js";
 import { asyncHandler } from "../utils/async-handler.js";
-import { availableUserRoles, userRoleEnum } from "../utils/constants.js";
 import mongoose from "mongoose";
-import { assign } from "nodemailer/lib/shared/index.js";
 import User from "../models/user.models.js";
 import ProjectMember from "../models/projectmember.models.js";
 
@@ -94,12 +91,15 @@ const createTask = asyncHandler(async (req, res) => {
 
 const deleteTask = asyncHandler(async (req, res) => {
 
-    const { taskId } = req.params
+    const { projectId, taskId } = req.params
     
-    const task = await Task.findByIdAndDelete(taskId)
+    const task = await Task.findOneAndDelete({
+        _id : new mongoose.Types.ObjectId(taskId),
+        project : new mongoose.Types.ObjectId(projectId)
+    })
 
     if (!task) {
-        throw new ApiError(404, "task not found.")
+        throw new ApiError(404, "task not found in this project.")
     }
 
     return res
@@ -177,7 +177,10 @@ const updateTask = asyncHandler(async (req, res) => {
 const getTaskById = asyncHandler(async (req, res) => {
 
     const { taskId, projectId } = req.params
-    const task = await Task.findById(taskId)
+    const task = await Task.findOne({
+        _id : new mongoose.Types.ObjectId(taskId),
+        project : new mongoose.Types.ObjectId(projectId)
+    })
         .populate("assignedTo", "username fullName avatar")
 
     if (!task) {
