@@ -14,6 +14,18 @@ import
     
 } from "../controller/project.controller.js";
 import { availableUserRoles, userRoleEnum } from "../utils/constants.js";
+import { 
+         addMemberToProjectValidator,
+         createProjectValidator,
+         deleteMemberValidator, 
+         deleteProjectValidator, 
+         getProjectByIdValidator, 
+         getProjectMembersValidator, 
+         updateMemberRoleValidator, 
+         updateProjectValidator
+         
+ } from "../validators/project-validator.js";
+ import { validate } from "../middleware/validation.middleware.js";
 
 
 
@@ -26,23 +38,23 @@ router.use(verifyJWT)
 router
     .route("/")
     .get(getAllMyProjects)
-    .post(validateRoles(userRoleEnum.ADMIN),createProject)
+    .post(validateRoles(userRoleEnum.ADMIN),createProjectValidator(), validate, createProject)
 
 router
     .route("/:projectId")
-    .get(validateProjectPermission(availableUserRoles), getProjectById)
-    .put(validateProjectPermission([userRoleEnum.ADMIN]), updateProject)
-    .delete(validateProjectPermission([userRoleEnum.ADMIN]), deleteProject)
+    .get(validateProjectPermission(availableUserRoles),getProjectByIdValidator(), validate, getProjectById)
+    .put(validateProjectPermission([userRoleEnum.ADMIN]),updateProjectValidator(), validate, updateProject)
+    .delete(validateProjectPermission([userRoleEnum.ADMIN]),deleteProjectValidator(), validate, deleteProject)
     
 router
     .route("/:projectId/member")
-    .get(getProjectMembers)
-    .post(validateProjectPermission([ userRoleEnum.ADMIN, userRoleEnum.PROJECT_ADMIN]), addMemberToProject)
+    .get(getProjectMembersValidator(), validate, getProjectMembers)
+    .post(validateProjectPermission([ userRoleEnum.ADMIN, userRoleEnum.PROJECT_ADMIN]),addMemberToProjectValidator(), validate, addMemberToProject)
 
 router
     .route("/:projectId/member/:userId")
-    .put(validateProjectPermission([ userRoleEnum.ADMIN ]), updateMemberRole)
-    .delete(validateProjectPermission([ userRoleEnum.ADMIN, userRoleEnum.PROJECT_ADMIN ]), deleteMember)
+    .put(validateProjectPermission([ userRoleEnum.ADMIN ]),updateMemberRoleValidator(), validate, updateMemberRole)
+    .delete(validateProjectPermission([ userRoleEnum.ADMIN, userRoleEnum.PROJECT_ADMIN ]),deleteMemberValidator(), validate, deleteMember)
 
 
 
