@@ -1,7 +1,7 @@
 import { body, param } from "express-validator";
-import { availableTaskStatusEnum } from "../utils/constants";
 
-const getTasksValidator = () => {
+
+const getSubTaskValidator = () => {
     return [
         param("projectId")
             .notEmpty()
@@ -13,10 +13,22 @@ const getTasksValidator = () => {
 
         return true;
         }),
+
+        param("taskId")
+            .notEmpty()
+            .withMessage("Task Id must be required")
+            .custom((value) => {
+                if (!mongoose.Types.ObjectId.isValid(value)) {
+                    throw new Error("Invalid Task ID");
+            }
+
+        return true;
+        }),
     ]
 }
 
-const createTaskValidator = () => {
+
+const createSubTaskValidator = () => {
     return [
 
         body("title")
@@ -57,22 +69,6 @@ const createTaskValidator = () => {
 
         return true;
         }),
-    ]
-}
-
-
-const deleteTaskValidator = () => {
-    return [
-        param("projectId")
-            .notEmpty()
-            .withMessage("Project Id must be required")
-            .custom((value) => {
-                if (!mongoose.Types.ObjectId.isValid(value)) {
-                    throw new Error("Invalid Project ID");
-            }
-
-        return true;
-        }),
 
         param("taskId")
             .notEmpty()
@@ -88,33 +84,8 @@ const deleteTaskValidator = () => {
 }
 
 
-const getTaskByIdValidator = () => {
-    return [
-        param("projectId")
-            .notEmpty()
-            .withMessage("Project Id must be required")
-            .custom((value) => {
-                if (!mongoose.Types.ObjectId.isValid(value)) {
-                    throw new Error("Invalid Project ID");
-            }
 
-        return true;
-        }),
-
-        param("taskId")
-            .notEmpty()
-            .withMessage("Task Id must be required")
-            .custom((value) => {
-                if (!mongoose.Types.ObjectId.isValid(value)) {
-                    throw new Error("Invalid Task ID");
-            }
-
-        return true;
-        }),
-    ]
-}
-
-const updateTaskValidator = () => {
+const updateSubTaskValidator = () => {
     return [
 
         body("title")
@@ -144,7 +115,7 @@ const updateTaskValidator = () => {
             .optional()
             .isIn(availableTaskStatusEnum)
             .withMessage("Invalid task status"),
-
+        
         param("projectId")
             .notEmpty()
             .withMessage("Project Id must be required")
@@ -166,13 +137,101 @@ const updateTaskValidator = () => {
 
         return true;
         }),
+
+        param("subTaskId")
+            .notEmpty()
+            .withMessage("Sub-Task Id must be required")
+            .custom((value) => {
+                if (!mongoose.Types.ObjectId.isValid(value)) {
+                    throw new Error("Invalid Sub-Task ID");
+            }
+
+        return true;
+        }),
     ]
 }
 
+
+const deleteSubTaskValidator = () => {
+    return [
+        param("projectId")
+            .notEmpty()
+            .withMessage("Project Id must be required")
+            .custom((value) => {
+                if (!mongoose.Types.ObjectId.isValid(value)) {
+                    throw new Error("Invalid Project ID");
+            }
+
+        return true;
+        }),
+
+        param("taskId")
+            .notEmpty()
+            .withMessage("Task Id must be required")
+            .custom((value) => {
+                if (!mongoose.Types.ObjectId.isValid(value)) {
+                    throw new Error("Invalid Task ID");
+            }
+
+        return true;
+        }),
+
+        param("subTaskId")
+            .notEmpty()
+            .withMessage("Sub-Task Id must be required")
+            .custom((value) => {
+                if (!mongoose.Types.ObjectId.isValid(value)) {
+                    throw new Error("Invalid Sub-Task ID");
+            }
+
+        return true;
+        }),
+    ]
+}
+
+
+const getSubTaskByIdValidator = () => {
+    return [
+        param("projectId")
+            .notEmpty()
+            .withMessage("Project Id must be required")
+            .custom((value) => {
+                if (!mongoose.Types.ObjectId.isValid(value)) {
+                    throw new Error("Invalid Project ID");
+            }
+
+        return true;
+        }),
+
+        param("taskId")
+            .notEmpty()
+            .withMessage("Task Id must be required")
+            .custom((value) => {
+                if (!mongoose.Types.ObjectId.isValid(value)) {
+                    throw new Error("Invalid Task ID");
+            }
+
+        return true;
+        }),
+
+        param("subTaskId")
+            .notEmpty()
+            .withMessage("Sub-Task Id must be required")
+            .custom((value) => {
+                if (!mongoose.Types.ObjectId.isValid(value)) {
+                    throw new Error("Invalid Sub-Task ID");
+            }
+
+        return true;
+        }),
+    ]
+}
+
+
 export {
-    getTasksValidator,
-    createTaskValidator,
-    deleteTaskValidator,
-    getTaskByIdValidator,
-    updateTaskValidator
+    getSubTaskByIdValidator,
+    getSubTaskValidator,
+    deleteSubTaskValidator,
+    createSubTaskValidator,
+    updateSubTaskValidator
 }
