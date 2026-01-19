@@ -48,23 +48,23 @@ export const validateProjectPermission = (roles = []) =>
             throw new ApiError(400, "Project id missing.")
         }
 
-        const project = await ProjectMember.findOne({
+        const memberShip = await ProjectMember.findOne({
             project : new mongoose.Types.ObjectId(projectId),
             user : new mongoose.Types.ObjectId(req.user._id)
         })
 
-        if (!project) {
+        if (!memberShip) {
             throw new ApiError(404, "You are not a member of this project.")
         }
         // console.log(project);
         
-        const givenRole = project.role
-        // console.log(givenRole);
-        req.user.role = givenRole
+        const projectRole = memberShip.role
+        
+        req.projectRole = projectRole
         
         
 
-        if (!roles.includes(givenRole)) {
+        if (!roles.includes(projectRole)) {
             throw new ApiError(403, "Access denied!")
         }
 

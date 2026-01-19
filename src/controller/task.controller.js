@@ -33,7 +33,7 @@ const getTasks = asyncHandler(async (req, res) => {
 
 const createTask = asyncHandler(async (req, res) => {
 
-    const { tittle, discription, assignTo, status } = req.body
+    const { title, description, assignTo, status } = req.body
     const { projectId } = req.params
     const project = await Project.findById(projectId)
 
@@ -75,8 +75,8 @@ const createTask = asyncHandler(async (req, res) => {
     })
 
     const task = await Task.create({
-        tittle,
-        discription,
+        title,
+        description,
         project : new mongoose.Types.ObjectId(projectId),
         assignedTo : new mongoose.Types.ObjectId(assignTo),
         status,
