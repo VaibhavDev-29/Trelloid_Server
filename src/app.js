@@ -11,6 +11,7 @@ import authRouter from "./routes/auth.route.js"
 import projectRouter from "./routes/project.route.js"
 import taskRouter from "./routes/task.route.js"
 import subTaskRouter from "./routes/subtask.route.js"
+import noteRouter from "./routes/note.route.js"
 
 
 app.use("/api/v1/healthcheck", healthcheckRouter)
@@ -18,6 +19,7 @@ app.use("/api/v1/auth", authRouter)
 app.use("/api/v1/projects", projectRouter)
 app.use("/api/v1/tasks", taskRouter)
 app.use("/api/v1/tasks/subTask", subTaskRouter)
+app.use("/api/v1/projects/note", noteRouter)
 
 
 export default app

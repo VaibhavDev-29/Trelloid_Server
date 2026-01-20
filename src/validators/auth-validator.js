@@ -1,4 +1,4 @@
-import { body, param } from "express-validator";
+import { body, param, check } from "express-validator";
 import { availableUserRoles } from "../utils/constants.js";
 
 const userRegistrationValidator = () => {
@@ -53,7 +53,11 @@ const userRegistrationValidator = () => {
 }
 
 const userLoginValidator = () => {
+    console.log("hello");
+    
     return [
+
+
         // email
         body("email")
             .trim()
@@ -75,7 +79,7 @@ const userLoginValidator = () => {
             .isLength({min:8, max: 20})
             .withMessage("Password must be atleast 8 characters"),
 
-        body()
+        check()
             .custom((_, { req }) => {
                 if (!req.body.email && !req.body.username) {
                 throw new Error("Email or username is required");
@@ -89,7 +93,8 @@ const userLoginValidator = () => {
                 throw new Error("Use either email or username, not both");
             }
             return true;
-        })
+        }),
+        
     ]
 }
 

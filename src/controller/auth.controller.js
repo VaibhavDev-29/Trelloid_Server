@@ -107,11 +107,6 @@ const loginUser = asyncHandler(async (req,res) => {
     // get data 
     const { username, email, password, role} = req.body
 
-    // validate data using express validator
-    if (!username || !email) {
-        throw new ApiError( 400, "Username or Email is required")
-    }
-
     const user = await User.findOne({
         $or : [{username}, {email}]
     })

@@ -1,5 +1,5 @@
 import { body, param } from "express-validator";
-import { availableTaskStatusEnum } from "../utils/constants";
+import { availableTaskStatusEnum } from "../utils/constants.js";
 
 const getTasksValidator = () => {
     return [
