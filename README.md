@@ -28,13 +28,21 @@ It focuses on how teams collaborate, manage tasks, and track progress efficientl
 ## 🧰 Tech Stack
 
 | Technology | Purpose |
-|-------------|----------|
-| **Node.js** | Server runtime |
-| **Express.js** | Web framework for routing and middleware |
-| **MongoDB** | NoSQL database for flexible data storage |
-| **Mongoose** | ODM for MongoDB schema modeling |
-| **JWT (JSON Web Tokens)** | Secure authentication and authorization |
-
+|-----------|---------|
+| Node.js | Server-side JavaScript runtime |
+| Express.js | Web framework for routing and middleware |
+| MongoDB | NoSQL database for flexible and scalable data storage |
+| Mongoose | ODM for MongoDB schema modeling and database operations |
+| bcrypt | Secure password hashing |
+| JSON Web Token (JWT) | Authentication and authorization using tokens |
+| cookie-parser | Parsing and managing HTTP cookies |
+| cors | Handling Cross-Origin Resource Sharing (CORS) |
+| express-validator | Request validation and sanitization |
+| multer | Handling file uploads |
+| nodemailer | Sending emails from the server |
+| mailgen | Generating responsive and professional email templates |
+| dotenv | Managing environment variables securely |
+| nodemon | Development tool for automatic server restarts |
 ---
 
 ## 📁 Folder Structure (Planned)
@@ -80,25 +88,106 @@ Trelloid_Server/
    PORT=5000
    MONGO_URI=your_mongodb_connection_URI
    JWT_SECRET=your_jwt_secret_key
+
+   for more check .env.sample
    ```
 
 4. **Run the server**
 
    ```bash
-   npm run dev
+   npm run start
    ```
 
 ---
 
-## 🧪 API Endpoints (Sample)
+## 🧪 API Endpoints
+---
+## 🔐 Auth Routes (`/api/v1/auth`)
 
-| Method | Endpoint             | Description                 |
-| ------ | -------------------- | --------------------------- |
-| `POST` | `/api/auth/register` | Register a new user         |
-| `POST` | `/api/auth/login`    | Login and get JWT token     |
-| `GET`  | `/api/projects`      | Get all projects of user    |
-| `POST` | `/api/projects`      | Create a new project        |
-| `POST` | `/api/tasks`         | Create or assign a new task |
+| Method | Endpoint | Description |
+|------|---------|------------|
+| POST | `/api/v1/auth/register` | Register a new user (with avatar upload) |
+| GET | `/api/v1/auth/verify-email/:verificationToken` | Verify user email |
+| POST | `/api/v1/auth/login` | Login user and generate JWT tokens |
+| POST | `/api/v1/auth/forgot-password` | Request password reset |
+| GET | `/api/v1/auth/forgot-password/:token` | Reset password using token |
+| POST | `/api/v1/auth/resend-email` | Resend email verification |
+| GET | `/api/v1/auth/refresh-token` | Refresh access token |
+| POST | `/api/v1/auth/logout` | Logout authenticated user |
+| GET | `/api/v1/auth/current-user` | Get current logged-in user |
+| POST | `/api/v1/auth/change-password` | Change current user password |
+
+---
+
+## 📁 Project Routes (`/api/v1/projects`)
+
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/v1/projects` | Get all projects of current user |
+| POST | `/api/v1/projects` | Create a new project (Admin only) |
+| GET | `/api/v1/projects/:projectId` | Get project by ID |
+| PUT | `/api/v1/projects/:projectId` | Update project (Admin only) |
+| DELETE | `/api/v1/projects/:projectId` | Delete project (Admin only) |
+
+---
+
+## 👥 Project Member Routes (`/api/v1/projects`)
+
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/v1/projects/:projectId/member` | Get all project members |
+| POST | `/api/v1/projects/:projectId/member` | Add member to project |
+| PUT | `/api/v1/projects/:projectId/member/:userId` | Update project member role |
+| DELETE | `/api/v1/projects/:projectId/member/:userId` | Remove member from project |
+
+---
+
+## ✅ Task Routes (`/api/v1/tasks`)
+
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/v1/tasks/:projectId` | Get all tasks of a project |
+| POST | `/api/v1/tasks/:projectId` | Create a new task (supports attachments) |
+| GET | `/api/v1/tasks/:projectId/t/:taskId` | Get task by ID |
+| PUT | `/api/v1/tasks/:projectId/t/:taskId` | Update task (supports attachments) |
+| DELETE | `/api/v1/tasks/:projectId/t/:taskId` | Delete task |
+
+---
+
+## 🧩 SubTask Routes (`/api/v1/tasks/subTask`)
+
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/v1/tasks/subTask/:projectId/:taskId/subT` | Get all subtasks of a task |
+| POST | `/api/v1/tasks/subTask/:projectId/:taskId/subT` | Create a subtask |
+| GET | `/api/v1/tasks/subTask/:projectId/:taskId/subT/:subTaskId` | Get subtask by ID |
+| POST | `/api/v1/tasks/subTask/:projectId/:taskId/subT/:subTaskId` | Update subtask |
+| DELETE | `/api/v1/tasks/subTask/:projectId/:taskId/subT/:subTaskId` | Delete subtask |
+
+---
+
+## 📝 Note Routes (`/api/v1/projects/note`)
+
+| Method | Endpoint | Description |
+|------|---------|------------|
+| GET | `/api/v1/projects/note/:projectId` | Get all notes of a project |
+| POST | `/api/v1/projects/note/:projectId` | Create a project note |
+| PUT | `/api/v1/projects/note/:projectId/n/:noteId` | Update a note |
+| DELETE | `/api/v1/projects/note/:projectId/n/:noteId` | Delete a note |
+
+---
+
+## 🛡 Security & Access Control
+
+- JWT-based authentication
+- Role-based authorization  
+  - `ADMIN`
+  - `PROJECT_ADMIN`
+  - `MEMBER`
+- Input validation on all routes
+- File uploads handled using **Multer**
+
+---
 
 ---
 
