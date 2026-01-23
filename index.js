@@ -1,6 +1,6 @@
-import app from "./app.js"
+import app from "./src/app.js"
 import dotenv from "dotenv"
-import conectDb from "./db/connectdb.js"
+import conectDb from "./src/db/connectdb.js"
 
 
 
