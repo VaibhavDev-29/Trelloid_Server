@@ -143,7 +143,7 @@ const resetForgottenPasswordValidator = () => {
             .withMessage("reset token is required")
             .isString()
             .withMessage("reset token must be a string")
-            .isLength({ min: 20, max: 30 })
+            .isLength({ min: 20, max: 40 })
             .withMessage("Invalid reset token format")
     ]
 }

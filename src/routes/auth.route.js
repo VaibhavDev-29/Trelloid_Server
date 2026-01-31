@@ -32,7 +32,7 @@ router.post("/register", upload.single("avatar"),userRegistrationValidator(), va
 router.get("/verify-email/:verificationToken", verifyEmailValidator(), validate, verifyEmail)
 router.post("/login",userLoginValidator(), validate, loginUser)
 router.post("/forgot-password",forgotPasswordValidator(), validate, forgotPasswordRequest)
-router.get("/forgot-password/:token",resetForgottenPasswordValidator(), validate, resetForgottenPassword)
+router.post("/forgot-password/:resetToken",resetForgottenPasswordValidator(), validate, resetForgottenPassword)
 router.post("/resend-email",resendEmailVerificationValidator(), validate, resendEmailVerification)
 router.get("/refresh-token", refreshAccessToken )
 

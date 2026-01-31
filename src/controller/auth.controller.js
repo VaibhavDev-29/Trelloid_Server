@@ -44,7 +44,7 @@ const registerUser = asyncHandler( async (req, res) => {
     const { email, username, password, roles } = req.body
     console.log(req.file);
     
-     // validate data using express validator
+     // validate data using express validator 
     
     const existedUser = await User.findOne({
         $or : [{ username } , { email }]
@@ -269,7 +269,8 @@ const resetForgottenPassword = asyncHandler(async (req, res) => {
 
     const {resetToken} = req.params
     const {newPassword} = req.body
-
+    
+    
     // create a hashed version of token 
 
     const hashedToken = crypto
